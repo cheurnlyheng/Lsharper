@@ -1,0 +1,15 @@
+# Video outputs & processed media
+outputvideo/
+processed/
+*.mp4
+*.mov
+*.mkv
+*.avi
+*.webm
+
+# Logs
+*.log
+
+# System files
+.DS_Store
+Thumbs.db

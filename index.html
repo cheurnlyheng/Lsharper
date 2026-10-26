@@ -1,0 +1,1761 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LSharper</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* ========== MINIMALIST DESIGN SYSTEM ========== */
+    :root {
+      --font: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+
+      --bg: #09090b;
+      --card: #121215;
+      --card-hover: #17171c;
+      --input: #0e0e11;
+      --border: #232328;
+      --border-hover: #383842;
+      --border-focus: #52525b;
+
+      --text: #fafafa;
+      --text-muted: #8b8b96;
+      --text-subtle: #52525b;
+
+      --accent: #ffffff;
+      --accent-text: #09090b;
+      --accent-subtle: #1c1c22;
+
+      --ok: #10b981;
+      --err: #ef4444;
+
+      --radius-sm: 4px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+    }
+
+    [data-theme="light"] {
+      --bg: #f8f9fa;
+      --card: #ffffff;
+      --card-hover: #f4f4f5;
+      --input: #f4f4f5;
+      --border: #e4e4e7;
+      --border-hover: #d4d4d8;
+      --border-focus: #71717a;
+
+      --text: #09090b;
+      --text-muted: #64748b;
+      --text-subtle: #94a3b8;
+
+      --accent: #09090b;
+      --accent-text: #ffffff;
+      --accent-subtle: #e4e4e7;
+
+      --ok: #059669;
+      --err: #dc2626;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      font-size: 13px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ========== HEADER ========== */
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 28px;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg);
+    }
+    .brand-title {
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: var(--text);
+    }
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .btn-icon-header {
+      width: 38px;
+      height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius-md);
+      background: var(--card);
+      border: 1px solid var(--border);
+      color: var(--text);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .btn-icon-header svg {
+      width: 20px;
+      height: 20px;
+    }
+    .btn-icon-header:hover {
+      background: var(--card-hover);
+      border-color: var(--border-hover);
+      transform: translateY(-1px);
+    }
+
+    /* ========== MAIN LAYOUT ========== */
+    main {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 360px minmax(0, 1fr);
+      gap: 20px;
+      padding: 24px 28px;
+      max-width: 1600px;
+      margin: 0 auto;
+      width: 100%;
+    }
+    @media (max-width: 960px) {
+      main { grid-template-columns: 1fr; padding: 16px; }
+    }
+
+    .col-left, .col-right {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      min-width: 0;
+    }
+
+    /* ========== CARDS ========== */
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+    }
+    .card-title {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+
+    /* ========== INPUTS & BUTTONS ========== */
+    button, input[type=text], select {
+      font-family: var(--font);
+      font-size: 13px;
+      color: var(--text);
+      background: var(--input);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 8px 12px;
+      outline: none;
+      transition: border-color 0.15s ease, background 0.15s ease;
+    }
+    input[type=text]:focus, select:focus {
+      border-color: var(--border-focus);
+    }
+    button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      cursor: pointer;
+      font-weight: 500;
+      background: var(--card);
+      border: 1px solid var(--border);
+    }
+    button:hover:not(:disabled) {
+      background: var(--card-hover);
+      border-color: var(--border-hover);
+      color: var(--text);
+    }
+    button:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    button.primary {
+      background: var(--accent);
+      color: var(--accent-text);
+      border-color: var(--accent);
+      font-weight: 600;
+    }
+    button.primary:hover:not(:disabled) {
+      opacity: 0.92;
+      background: var(--accent);
+      color: var(--accent-text);
+    }
+
+    button.danger-outline {
+      border-color: var(--border);
+      color: var(--text-muted);
+    }
+    button.danger-outline:hover:not(:disabled) {
+      border-color: var(--err);
+      color: var(--err);
+    }
+
+    button.ghost {
+      background: transparent;
+      border-color: transparent;
+      color: var(--text-muted);
+      padding: 4px 8px;
+    }
+    button.ghost:hover:not(:disabled) {
+      color: var(--text);
+      background: var(--card-hover);
+    }
+
+    /* ========== SELECT WRAPPER WITH ANIMATED CHEVRON ========== */
+    .select-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    .select-wrap select {
+      width: 100%;
+      padding-right: 32px;
+      cursor: pointer;
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+    }
+    .select-wrap select option {
+      background: var(--card);
+      color: var(--text);
+      padding: 8px;
+    }
+    .select-chevron {
+      position: absolute;
+      right: 11px;
+      pointer-events: none;
+      color: var(--text-muted);
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), color 0.15s ease;
+    }
+    .select-wrap.open .select-chevron,
+    .select-wrap:focus-within .select-chevron {
+      transform: rotate(180deg);
+      color: var(--text);
+    }
+
+    /* ========== INPUT WRAPPER WITH INLINE CLEAR (X) ========== */
+    .row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    .input-wrap {
+      position: relative;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      min-width: 0;
+    }
+    .input-wrap input[type=text] {
+      width: 100%;
+      padding-right: 28px;
+    }
+    .input-clear-btn {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: transparent !important;
+      border: none !important;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 4px !important;
+      display: none;
+      font-size: 12px;
+      line-height: 1;
+    }
+    .input-clear-btn:hover {
+      color: var(--text) !important;
+    }
+
+    /* Recent Chips */
+    .recent-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 10px;
+    }
+    .chip {
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: var(--radius-sm);
+      background: var(--input);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .chip:hover {
+      border-color: var(--border-hover);
+      color: var(--text);
+    }
+
+    /* ========== CONTROLS & SLIDERS ========== */
+    .control-group {
+      margin-bottom: 12px;
+    }
+    .control-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      margin-bottom: 4px;
+    }
+    .control-label {
+      color: var(--text);
+      font-weight: 500;
+    }
+    .control-val-badge {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-muted);
+      background: var(--input);
+      border: 1px solid var(--border);
+      padding: 1px 6px;
+      border-radius: var(--radius-sm);
+      font-variant-numeric: tabular-nums;
+      cursor: pointer;
+    }
+    .control-val-badge:hover {
+      color: var(--text);
+      border-color: var(--border-hover);
+    }
+    .control-hint {
+      font-size: 11px;
+      color: var(--text-subtle);
+      margin-top: 2px;
+    }
+
+    /* Minimal Flat Slider */
+    input[type=range] {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 4px;
+      border-radius: 2px;
+      background: var(--border);
+      outline: none;
+      cursor: pointer;
+      margin: 8px 0;
+      border: none;
+      padding: 0;
+    }
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--text);
+      border: 1px solid var(--border);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+      cursor: grab;
+      transition: transform 0.1s ease;
+    }
+    input[type=range]::-webkit-slider-thumb:hover {
+      transform: scale(1.15);
+    }
+    input[type=range]::-webkit-slider-thumb:active {
+      cursor: grabbing;
+    }
+
+    /* Minimalist Switch */
+    .switch-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-top: 1px solid var(--border);
+      margin-top: 14px;
+      cursor: pointer;
+    }
+    .switch-title {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text);
+    }
+    .switch-desc {
+      font-size: 11px;
+      color: var(--text-subtle);
+    }
+    .toggle-switch {
+      position: relative;
+      width: 36px;
+      height: 20px;
+      flex-shrink: 0;
+    }
+    .toggle-switch input { opacity: 0; width: 0; height: 0; }
+    .slider-toggle {
+      position: absolute;
+      cursor: pointer;
+      inset: 0;
+      background-color: var(--border);
+      border-radius: 999px;
+      transition: background-color 0.2s ease;
+    }
+    .slider-toggle:before {
+      position: absolute;
+      content: "";
+      height: 14px;
+      width: 14px;
+      left: 3px;
+      bottom: 3px;
+      background-color: var(--text);
+      border-radius: 50%;
+      transition: transform 0.2s ease;
+    }
+    .toggle-switch input:checked + .slider-toggle {
+      background-color: var(--border-focus);
+    }
+    .toggle-switch input:checked + .slider-toggle:before {
+      transform: translateX(16px);
+    }
+
+    /* Output Section */
+    .batch-summary {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 10px;
+    }
+    .progress-bar-wrap {
+      height: 4px;
+      background: var(--input);
+      border-radius: 2px;
+      overflow: hidden;
+      margin-top: 10px;
+      display: none;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--text);
+      transition: width 0.2s ease;
+    }
+
+    /* ========== PREVIEW STUDIO ========== */
+    .preview-header-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .preview-mode-pills {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .mode-pill {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: 11px;
+      padding: 4px 9px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .mode-pill.active {
+      background: var(--input);
+      color: var(--text);
+      border-color: var(--border-hover);
+    }
+    .mode-pill:hover:not(.active) {
+      color: var(--text);
+      border-color: var(--border-hover);
+    }
+
+    .cmp-container {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16/9;
+      background: #000000;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      user-select: none;
+      border: 1px solid var(--border);
+    }
+    .cmp-img-layer {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      background: #000;
+    }
+    .cmp-before {
+      clip-path: inset(0 50% 0 0);
+    }
+    .cmp-divider {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 50%;
+      width: 1px;
+      background: rgba(255, 255, 255, 0.95);
+      pointer-events: none;
+      transform: translateX(-50%);
+    }
+    .cmp-handle-badge {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: #ffffff;
+      color: #000000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 9px;
+      font-weight: 700;
+      cursor: ew-resize;
+      pointer-events: auto;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.5);
+    }
+
+    .preview-tag {
+      position: absolute;
+      top: 10px;
+      padding: 3px 8px;
+      border-radius: var(--radius-sm);
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      pointer-events: none;
+      background: rgba(0, 0, 0, 0.7);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+    .tag-before { left: 10px; }
+    .tag-after { right: 10px; }
+
+    /* Timeline */
+    .preview-timeline {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .timeline-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+    .timeline-range {
+      flex: 1;
+    }
+    .timeline-time {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text);
+      min-width: 44px;
+      text-align: right;
+    }
+
+    .preview-loader {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      font-size: 12px;
+      gap: 8px;
+    }
+    .spinner {
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      border-top-color: #ffffff;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .empty-state {
+      padding: 40px 16px;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 12px;
+    }
+
+    /* ========== BATCH QUEUE ========== */
+    .files-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    .files-list {
+      max-height: 340px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .file-item {
+      display: grid;
+      grid-template-columns: auto auto 1fr auto;
+      gap: 10px;
+      align-items: center;
+      padding: 8px 10px;
+      background: var(--input);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+    }
+    .file-item:hover {
+      border-color: var(--border-hover);
+    }
+    .file-item.selected {
+      border-color: var(--border-focus);
+      background: var(--card-hover);
+    }
+    .file-ext {
+      font-size: 10px;
+      font-weight: 600;
+      font-family: var(--font-mono);
+      color: var(--text-muted);
+      background: var(--card);
+      border: 1px solid var(--border);
+      padding: 2px 4px;
+      border-radius: 3px;
+    }
+    .file-name {
+      font-size: 12px;
+      color: var(--text);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .file-meta {
+      font-size: 11px;
+      color: var(--text-subtle);
+    }
+    .file-status-badge {
+      font-size: 11px;
+      font-family: var(--font-mono);
+      color: var(--text-muted);
+    }
+    .file-status-badge.done { color: var(--ok); }
+    .file-status-badge.error { color: var(--err); }
+
+    /* Checkbox */
+    input[type=checkbox] {
+      accent-color: var(--accent);
+      cursor: pointer;
+    }
+
+    /* Toast */
+    #toastContainer {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      pointer-events: none;
+    }
+    .toast {
+      pointer-events: auto;
+      padding: 8px 14px;
+      border-radius: var(--radius-md);
+      background: var(--card);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-size: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      opacity: 0;
+      transform: translateY(6px);
+      transition: all 0.2s ease;
+    }
+    .toast.show { opacity: 1; transform: translateY(0); }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+      padding: 16px;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal-box {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      width: 100%;
+      max-width: 420px;
+    }
+    .modal-title {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+    .modal-desc {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 14px;
+    }
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 16px;
+    }
+
+    /* ========== FULLSCREEN PREVIEW OVERLAY ========== */
+    .fs-overlay {
+      position: fixed;
+      inset: 0;
+      background: #09090b;
+      z-index: 3000;
+      display: none;
+      flex-direction: column;
+      padding: 16px 24px;
+    }
+    .fs-overlay.active {
+      display: flex;
+    }
+    .fs-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+    .fs-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .fs-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #fafafa;
+    }
+    .fs-badge {
+      font-size: 11px;
+      font-family: var(--font-mono);
+      color: var(--text-muted);
+      background: #141417;
+      border: 1px solid var(--border);
+      padding: 2px 8px;
+      border-radius: var(--radius-sm);
+    }
+    .fs-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .fs-body {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      min-height: 0;
+    }
+    .fs-body .cmp-container {
+      width: 100%;
+      height: 100%;
+      max-height: calc(100vh - 120px);
+      aspect-ratio: auto;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+    }
+    .fs-timeline {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding-top: 14px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ========== HEADER ========== -->
+  <header>
+    <span class="brand-title">LSharper</span>
+    <div class="header-actions">
+      <button class="btn-icon-header" id="btnResetAll" title="Reset all settings to default">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+          <path d="M3 3v5h5"></path>
+        </svg>
+      </button>
+      <button class="btn-icon-header" id="btnTheme" title="Toggle Light / Dark Mode">
+        <svg id="themeIconSun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="5"></circle>
+          <line x1="12" y1="1" x2="12" y2="3"></line>
+          <line x1="12" y1="21" x2="12" y2="23"></line>
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+          <line x1="1" y1="12" x2="3" y2="12"></line>
+          <line x1="21" y1="12" x2="23" y2="12"></line>
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>
+        <svg id="themeIconMoon" style="display:none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- ========== MAIN ========== -->
+  <main>
+    <!-- LEFT COLUMN -->
+    <div class="col-left">
+
+      <!-- FOLDER -->
+      <div class="card">
+        <div class="card-title">Source Folder</div>
+        <div class="row">
+          <div class="input-wrap">
+            <input type="text" id="folder" placeholder="C:\Videos\clips" spellcheck="false">
+            <button id="btnClearFolder" class="input-clear-btn" title="Clear">✕</button>
+          </div>
+          <button id="browse">Browse</button>
+        </div>
+        <div class="row" style="margin-top: 8px;">
+          <button id="scan" class="primary" style="flex:1">Load files</button>
+        </div>
+        <div class="recent-chips" id="recentChips"></div>
+      </div>
+
+      <!-- SETTINGS -->
+      <div class="card">
+        <div class="card-title">Enhancement</div>
+
+        <!-- Presets Row -->
+        <div class="row" style="margin-bottom: 14px;">
+          <div class="select-wrap" style="flex:1">
+            <select id="presetSel"></select>
+            <svg class="select-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </div>
+          <button id="presetSave" title="Save preset">Save</button>
+          <button id="presetDel" title="Delete preset" class="danger-outline">✕</button>
+        </div>
+
+        <!-- Upscale Target -->
+        <div class="control-group">
+          <div class="control-header">
+            <span class="control-label">Upscale</span>
+            <span class="control-val-badge" id="v_up">Off</span>
+          </div>
+          <div class="select-wrap" style="width:100%">
+            <select id="upscale">
+              <option value="off">Off (Native)</option>
+              <option value="f1.5">1.5×</option>
+              <option value="f2">2.0×</option>
+              <option value="f4">4.0×</option>
+              <option value="h1080">To 1080p</option>
+              <option value="h1440">To 1440p (2K)</option>
+              <option value="h2160">To 2160p (4K)</option>
+            </select>
+            <svg class="select-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Sharpness -->
+        <div class="control-group">
+          <div class="control-header">
+            <span class="control-label">Sharpness</span>
+            <span class="control-val-badge" id="v_sharpness" title="Double click to reset">0.8</span>
+          </div>
+          <input type="range" id="sharpness" min="0" max="3" step="0.1" value="0.8">
+        </div>
+
+        <!-- Saturation -->
+        <div class="control-group">
+          <div class="control-header">
+            <span class="control-label">Saturation</span>
+            <span class="control-val-badge" id="v_saturation" title="Double click to reset">1.15</span>
+          </div>
+          <input type="range" id="saturation" min="0" max="2" step="0.05" value="1.15">
+        </div>
+
+        <!-- Contrast -->
+        <div class="control-group">
+          <div class="control-header">
+            <span class="control-label">Contrast</span>
+            <span class="control-val-badge" id="v_contrast" title="Double click to reset">1.04</span>
+          </div>
+          <input type="range" id="contrast" min="0.5" max="1.5" step="0.02" value="1.04">
+        </div>
+
+        <!-- Brightness -->
+        <div class="control-group">
+          <div class="control-header">
+            <span class="control-label">Brightness</span>
+            <span class="control-val-badge" id="v_brightness" title="Double click to reset">0.00</span>
+          </div>
+          <input type="range" id="brightness" min="-0.3" max="0.3" step="0.01" value="0">
+        </div>
+
+        <!-- Denoise -->
+        <div class="control-group">
+          <div class="control-header">
+            <span class="control-label">Denoise</span>
+            <span class="control-val-badge" id="v_denoise" title="Double click to reset">0.0</span>
+          </div>
+          <input type="range" id="denoise" min="0" max="8" step="0.5" value="0">
+        </div>
+
+        <!-- Quality -->
+        <div class="control-group">
+          <div class="control-header">
+            <span class="control-label">Quality (CRF/CQ)</span>
+            <span class="control-val-badge" id="v_quality" title="Lower = better fidelity">20</span>
+          </div>
+          <input type="range" id="quality" min="14" max="30" step="1" value="20">
+          <div class="control-hint" id="qualityHint">High Quality (Recommended)</div>
+        </div>
+
+        <!-- GPU -->
+        <label class="switch-row" for="useGpu">
+          <div>
+            <div class="switch-title">GPU Encoding</div>
+            <div class="switch-desc">NVIDIA NVENC hardware acceleration</div>
+          </div>
+          <div class="toggle-switch">
+            <input type="checkbox" id="useGpu" checked>
+            <span class="slider-toggle"></span>
+          </div>
+        </label>
+      </div>
+
+      <!-- OUTPUT -->
+      <div class="card">
+        <div class="card-title">Output</div>
+        <div class="row">
+          <div class="input-wrap">
+            <input type="text" id="outDir" placeholder="default: <folder>\processed" spellcheck="false">
+          </div>
+          <button id="browseOut">Browse</button>
+        </div>
+
+        <div class="batch-summary" id="summaryText">Ready to enhance.</div>
+        <div class="progress-bar-wrap" id="overallBar">
+          <div class="progress-bar-fill" id="overallFill"></div>
+        </div>
+
+        <div class="row" style="margin-top: 12px;">
+          <button id="start" class="primary" style="flex:1" disabled>Start</button>
+          <button id="cancel" class="danger-outline" disabled>Cancel</button>
+        </div>
+
+        <div class="row" style="margin-top: 8px;">
+          <button id="openOut" style="display:none;flex:1">Open output folder</button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT COLUMN -->
+    <div class="col-right">
+
+      <!-- PREVIEW -->
+      <div class="card">
+        <div class="preview-header-bar">
+          <div class="card-title" style="margin-bottom:0">Preview · drag to compare</div>
+          <div class="preview-mode-pills">
+            <button class="mode-pill active" id="modeSplit">Split</button>
+            <button class="mode-pill" id="modeHold">Hold Original</button>
+            <button class="mode-pill" id="btnFullscreen" title="Fullscreen (F)">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
+              </svg>
+              Fullscreen
+            </button>
+          </div>
+        </div>
+
+        <div id="cmpWrap">
+          <div class="empty-state">Load a folder and select a file to preview.</div>
+        </div>
+
+        <div class="preview-timeline" id="videoTimeline" style="display:none">
+          <span class="timeline-label">Frame:</span>
+          <input type="range" id="seekSlider" class="timeline-range" min="0" max="10" step="0.5" value="0">
+          <span class="timeline-time" id="seekTime">00:00</span>
+        </div>
+      </div>
+
+      <!-- QUEUE -->
+      <div class="card">
+        <div class="files-toolbar">
+          <div class="card-title" style="margin-bottom:0">Files <span id="count" style="font-weight:400;text-transform:none"></span></div>
+          <div style="display:flex;gap:4px">
+            <button class="ghost" id="btnSelectAll">All</button>
+            <button class="ghost" id="btnDeselectAll">None</button>
+          </div>
+        </div>
+
+        <div class="row" style="margin-bottom:8px">
+          <div class="input-wrap">
+            <input type="text" id="fileFilter" placeholder="Filter files by name...">
+            <button id="btnClearFilter" class="input-clear-btn" title="Clear">✕</button>
+          </div>
+        </div>
+
+        <div class="files-list" id="files">
+          <div class="empty-state">No files yet.</div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- ========== FULLSCREEN PREVIEW OVERLAY ========== -->
+  <div class="fs-overlay" id="fullscreenOverlay">
+    <div class="fs-header">
+      <div class="fs-title-wrap">
+        <span class="fs-title" id="fsFileName">Interactive Preview</span>
+        <span class="fs-badge">Original vs Enhanced</span>
+      </div>
+      <div class="fs-actions">
+        <div class="preview-mode-pills">
+          <button class="mode-pill active" id="fsModeSplit">Split</button>
+          <button class="mode-pill" id="fsModeHold">Hold Original (Space)</button>
+        </div>
+        <button class="btn-icon-header" id="btnCloseFullscreen" title="Close Fullscreen (Esc)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="fs-body" id="fsCmpWrap"></div>
+
+    <div class="fs-timeline" id="fsTimeline" style="display:none">
+      <span class="timeline-label">Frame:</span>
+      <input type="range" id="fsSeekSlider" class="timeline-range" min="0" max="10" step="0.5" value="0">
+      <span class="timeline-time" id="fsSeekTime">00:00</span>
+    </div>
+  </div>
+
+  <!-- ========== TOAST NOTIFICATIONS ========== -->
+  <div id="toastContainer"></div>
+
+  <!-- ========== PRESET MODAL ========== -->
+  <div class="modal-overlay" id="savePresetModal">
+    <div class="modal-box">
+      <div class="modal-title">Save Preset</div>
+      <div class="modal-desc">Save current sliders and settings for quick reuse.</div>
+      <input type="text" id="presetNameInput" placeholder="Preset name" style="width:100%">
+      <div class="modal-footer">
+        <button id="btnCancelPresetModal">Cancel</button>
+        <button class="primary" id="btnConfirmSavePreset">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== JAVASCRIPT ========== -->
+  <script>
+    const $ = (id) => document.getElementById(id);
+    const api = (p, body) => fetch('/api/' + p, body ? {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    } : undefined).then(r => r.json());
+
+    const SLIDERS = ['sharpness', 'saturation', 'contrast', 'brightness', 'denoise', 'quality'];
+    const DEFAULTS = {
+      upscale: 'off',
+      sharpness: 0.8,
+      saturation: 1.15,
+      contrast: 1.04,
+      brightness: 0,
+      denoise: 0,
+      quality: 20,
+      useGpu: true
+    };
+
+    let files = [];
+    let selected = null;
+    let selectedItem = null;
+    let outDirUsed = '';
+    let polling = null;
+    let previewTimer = null;
+    let previewSeq = 0;
+    let activePreviewMode = 'split';
+    let currentPreviewData = null;
+    let currentVideoDuration = 0;
+    let isHoldingOriginal = false;
+    let currentSeekSeconds = 0;
+    let isFullscreenOpen = false;
+
+    function showToast(msg) {
+      const container = $('toastContainer');
+      const toast = document.createElement('div');
+      toast.className = 'toast';
+      toast.textContent = msg;
+      container.appendChild(toast);
+      setTimeout(() => toast.classList.add('show'), 10);
+      setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 250);
+      }, 3000);
+    }
+
+    function updateQualityHint(val) {
+      const v = +val;
+      let hint = 'High Quality (Recommended)';
+      if (v <= 16) hint = 'Near Lossless';
+      else if (v <= 21) hint = 'High Quality (Recommended)';
+      else if (v <= 25) hint = 'Balanced';
+      else hint = 'Smaller Size';
+      $('qualityHint').textContent = hint;
+    }
+
+    function getSettings() {
+      const s = { useGpu: $('useGpu').checked };
+      SLIDERS.forEach(k => s[k] = +$(k).value);
+      const u = $('upscale').value;
+      s.upscaleMode = u[0] === 'f' ? 'factor' : u[0] === 'h' ? 'height' : 'off';
+      s.upscaleFactor = u[0] === 'f' ? +u.slice(1) : 1;
+      s.upscaleHeight = u[0] === 'h' ? +u.slice(1) : 0;
+      s.upscale = u;
+      return s;
+    }
+
+    function applySettings(s) {
+      const v = { ...DEFAULTS, ...s };
+      SLIDERS.forEach(k => { if ($(k)) $(k).value = v[k]; });
+      if ($('upscale')) $('upscale').value = v.upscale;
+      if ($('useGpu')) $('useGpu').checked = v.useGpu;
+      refreshLabels();
+    }
+
+    function refreshLabels() {
+      SLIDERS.forEach(k => {
+        const el = $('v_' + k);
+        if (el) el.textContent = $(k).value;
+      });
+      const u = $('upscale');
+      $('v_up').textContent = u.options[u.selectedIndex] ? u.options[u.selectedIndex].text.split('(')[0].trim() : 'Off';
+      updateQualityHint($('quality').value);
+    }
+
+    SLIDERS.forEach(k => {
+      const badge = $('v_' + k);
+      if (badge) {
+        badge.addEventListener('dblclick', () => {
+          $(k).value = DEFAULTS[k];
+          refreshLabels();
+          schedulePreview();
+        });
+      }
+    });
+
+    $('btnResetAll').addEventListener('click', () => {
+      applySettings(DEFAULTS);
+      schedulePreview();
+      showToast('Settings reset to default');
+    });
+
+    // Theme Toggle
+    function updateThemeUI(theme) {
+      document.documentElement.setAttribute('data-theme', theme);
+      if (theme === 'dark') {
+        $('themeIconSun').style.display = 'block';
+        $('themeIconMoon').style.display = 'none';
+      } else {
+        $('themeIconSun').style.display = 'none';
+        $('themeIconMoon').style.display = 'block';
+      }
+    }
+    $('btnTheme').addEventListener('click', () => {
+      const curr = document.documentElement.getAttribute('data-theme') || 'dark';
+      const next = curr === 'dark' ? 'light' : 'dark';
+      updateThemeUI(next);
+      localStorage.setItem('ls_theme', next);
+    });
+
+    // Dropdown arrow 180deg click/open handler
+    document.querySelectorAll('.select-wrap select').forEach(sel => {
+      const wrap = sel.closest('.select-wrap');
+      sel.addEventListener('mousedown', () => {
+        wrap.classList.toggle('open');
+      });
+      sel.addEventListener('blur', () => {
+        wrap.classList.remove('open');
+      });
+      sel.addEventListener('change', () => {
+        wrap.classList.remove('open');
+      });
+    });
+
+    function schedulePreview() {
+      clearTimeout(previewTimer);
+      previewTimer = setTimeout(loadPreview, 300);
+    }
+
+    function formatTime(secs) {
+      secs = Math.round(secs);
+      const m = Math.floor(secs / 60);
+      const s = secs % 60;
+      return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+    }
+
+    async function loadPreview() {
+      if (!selected) return;
+      const seq = ++previewSeq;
+
+      let wrap = $('cmpWrap');
+      let loader = wrap.querySelector('.preview-loader');
+      if (!loader) {
+        loader = document.createElement('div');
+        loader.className = 'preview-loader';
+        loader.innerHTML = '<div class="spinner"></div><span>Rendering...</span>';
+        wrap.appendChild(loader);
+      }
+
+      const r = await api('preview', {
+        file: selected,
+        settings: getSettings(),
+        seek: currentSeekSeconds
+      });
+
+      if (seq !== previewSeq) return;
+
+      if (!r || !r.before || !r.after) {
+        wrap.innerHTML = '<div class="empty-state">Preview not available for this file.</div>';
+        $('videoTimeline').style.display = 'none';
+        $('fsTimeline').style.display = 'none';
+        return;
+      }
+
+      currentPreviewData = r;
+      currentVideoDuration = r.duration || 0;
+
+      const isVideo = selectedItem && selectedItem.kind === 'video' && currentVideoDuration > 0;
+      $('videoTimeline').style.display = isVideo ? 'flex' : 'none';
+      $('fsTimeline').style.display = isVideo ? 'flex' : 'none';
+
+      if (isVideo) {
+        const dur = Math.floor(currentVideoDuration);
+        $('seekSlider').max = dur;
+        $('fsSeekSlider').max = dur;
+        if (r.seek !== undefined) {
+          $('seekSlider').value = r.seek;
+          $('fsSeekSlider').value = r.seek;
+          const t = formatTime(r.seek);
+          $('seekTime').textContent = t;
+          $('fsSeekTime').textContent = t;
+        }
+      }
+
+      renderPreviewUI();
+    }
+
+    function renderComparisonLayer(container, prefix) {
+      if (!currentPreviewData) return;
+      const r = currentPreviewData;
+
+      if (activePreviewMode === 'split') {
+        container.innerHTML = `
+          <div class="cmp-container" id="${prefix}Cmp">
+            <img class="cmp-img-layer" src="data:image/jpeg;base64,${r.after}">
+            <img class="cmp-img-layer cmp-before" id="${prefix}TopImg" src="data:image/jpeg;base64,${r.before}">
+            <div class="cmp-divider" id="${prefix}Handle">
+              <div class="cmp-handle-badge">◀▶</div>
+            </div>
+            <span class="preview-tag tag-before">Original</span>
+            <span class="preview-tag tag-after">Enhanced</span>
+          </div>
+        `;
+
+        const cmp = $(`${prefix}Cmp`);
+        const topImg = $(`${prefix}TopImg`);
+        const handle = $(`${prefix}Handle`);
+
+        const move = (e) => {
+          const rect = cmp.getBoundingClientRect();
+          const pct = Math.max(0, Math.min(100, ((e.clientX - rect.left) / rect.width) * 100));
+          topImg.style.clipPath = `inset(0 ${100 - pct}% 0 0)`;
+          handle.style.left = pct + '%';
+        };
+
+        cmp.addEventListener('pointerdown', (e) => {
+          move(e);
+          cmp.setPointerCapture(e.pointerId);
+          cmp.onpointermove = move;
+        });
+        cmp.addEventListener('pointerup', () => cmp.onpointermove = null);
+
+      } else {
+        container.innerHTML = `
+          <div class="cmp-container" id="${prefix}CmpHold" style="cursor:pointer">
+            <img class="cmp-img-layer" id="${prefix}HoldImg" src="data:image/jpeg;base64,${isHoldingOriginal ? r.before : r.after}">
+            <span class="preview-tag ${isHoldingOriginal ? 'tag-before' : 'tag-after'}" id="${prefix}HoldTag">
+              ${isHoldingOriginal ? 'Original' : 'Enhanced (hold to see original)'}
+            </span>
+          </div>
+        `;
+        const cmpHold = $(`${prefix}CmpHold`);
+        const setOriginal = (showOrig) => {
+          isHoldingOriginal = showOrig;
+          const img = $(`${prefix}HoldImg`);
+          const tag = $(`${prefix}HoldTag`);
+          if (img) img.src = `data:image/jpeg;base64,${showOrig ? r.before : r.after}`;
+          if (tag) {
+            tag.className = `preview-tag ${showOrig ? 'tag-before' : 'tag-after'}`;
+            tag.textContent = showOrig ? 'Original' : 'Enhanced (hold to see original)';
+          }
+        };
+
+        cmpHold.addEventListener('pointerdown', (e) => {
+          cmpHold.setPointerCapture(e.pointerId);
+          setOriginal(true);
+        });
+        cmpHold.addEventListener('pointerup', () => setOriginal(false));
+        cmpHold.addEventListener('pointerleave', () => setOriginal(false));
+      }
+    }
+
+    function renderPreviewUI() {
+      if (!currentPreviewData) return;
+      renderComparisonLayer($('cmpWrap'), 'main');
+      if (isFullscreenOpen) {
+        renderComparisonLayer($('fsCmpWrap'), 'fs');
+      }
+    }
+
+    // Preview Mode Switchers
+    function setPreviewMode(mode) {
+      activePreviewMode = mode;
+      $('modeSplit').classList.toggle('active', mode === 'split');
+      $('modeHold').classList.toggle('active', mode === 'hold');
+      $('fsModeSplit').classList.toggle('active', mode === 'split');
+      $('fsModeHold').classList.toggle('active', mode === 'hold');
+      renderPreviewUI();
+    }
+    $('modeSplit').onclick = () => setPreviewMode('split');
+    $('modeHold').onclick = () => setPreviewMode('hold');
+    $('fsModeSplit').onclick = () => setPreviewMode('split');
+    $('fsModeHold').onclick = () => setPreviewMode('hold');
+
+    // Scrubber listeners (main + fullscreen sync)
+    function onScrub(e) {
+      currentSeekSeconds = +e.target.value;
+      const t = formatTime(currentSeekSeconds);
+      $('seekTime').textContent = t;
+      $('fsSeekTime').textContent = t;
+      $('seekSlider').value = currentSeekSeconds;
+      $('fsSeekSlider').value = currentSeekSeconds;
+    }
+    $('seekSlider').addEventListener('input', onScrub);
+    $('fsSeekSlider').addEventListener('input', onScrub);
+    $('seekSlider').addEventListener('change', () => loadPreview());
+    $('fsSeekSlider').addEventListener('change', () => loadPreview());
+
+    // Fullscreen Preview Open / Close
+    function openFullscreen() {
+      if (!currentPreviewData) {
+        showToast('Select a media file first to preview in fullscreen');
+        return;
+      }
+      isFullscreenOpen = true;
+      $('fullscreenOverlay').classList.add('active');
+      $('fsFileName').textContent = selectedItem ? selectedItem.name : 'Preview';
+      renderComparisonLayer($('fsCmpWrap'), 'fs');
+    }
+    function closeFullscreen() {
+      isFullscreenOpen = false;
+      $('fullscreenOverlay').classList.remove('active');
+    }
+
+    $('btnFullscreen').onclick = openFullscreen;
+    $('btnCloseFullscreen').onclick = closeFullscreen;
+
+    // Spacebar to hold original, Esc to close, F to toggle fullscreen
+    window.addEventListener('keydown', (e) => {
+      if (e.code === 'KeyF' && !['INPUT', 'SELECT', 'TEXTAREA'].includes(document.activeElement.tagName)) {
+        e.preventDefault();
+        if (isFullscreenOpen) closeFullscreen(); else openFullscreen();
+      } else if (e.code === 'Space' && !['INPUT', 'SELECT', 'TEXTAREA'].includes(document.activeElement.tagName)) {
+        e.preventDefault();
+        if (currentPreviewData && !isHoldingOriginal) {
+          isHoldingOriginal = true;
+          ['main', 'fs'].forEach(p => {
+            const img = $(`${p}HoldImg`);
+            const tag = $(`${p}HoldTag`);
+            if (img) img.src = `data:image/jpeg;base64,${currentPreviewData.before}`;
+            if (tag) {
+              tag.className = 'preview-tag tag-before';
+              tag.textContent = 'Original';
+            }
+            const topImg = $(`${p}TopImg`);
+            const handle = $(`${p}Handle`);
+            if (topImg) topImg.style.clipPath = 'inset(0 0% 0 0)';
+            if (handle) handle.style.left = '100%';
+          });
+        }
+      } else if (e.code === 'Escape') {
+        if (isFullscreenOpen) {
+          closeFullscreen();
+        } else {
+          $('savePresetModal').classList.remove('active');
+        }
+      }
+    });
+
+    window.addEventListener('keyup', (e) => {
+      if (e.code === 'Space' && isHoldingOriginal) {
+        isHoldingOriginal = false;
+        ['main', 'fs'].forEach(p => {
+          const img = $(`${p}HoldImg`);
+          const tag = $(`${p}HoldTag`);
+          if (img) img.src = `data:image/jpeg;base64,${currentPreviewData.after}`;
+          if (tag) {
+            tag.className = 'preview-tag tag-after';
+            tag.textContent = 'Enhanced';
+          }
+          const topImg = $(`${p}TopImg`);
+          const handle = $(`${p}Handle`);
+          if (topImg) topImg.style.clipPath = 'inset(0 50% 0 0)';
+          if (handle) handle.style.left = '50%';
+        });
+      }
+    });
+
+    function fmtSize(b) {
+      if (!b) return '0 B';
+      return b > 1e9 ? (b / 1e9).toFixed(2) + ' GB' : (b / 1e6).toFixed(1) + ' MB';
+    }
+
+    function renderFiles(jobMap) {
+      const filter = ($('fileFilter').value || '').toLowerCase().trim();
+      const listEl = $('files');
+
+      if (!files.length) {
+        listEl.innerHTML = '<div class="empty-state">No media files found.</div>';
+        $('count').textContent = '';
+        $('start').disabled = true;
+        updateSummary();
+        return;
+      }
+
+      const filtered = files.filter(f => !filter || f.name.toLowerCase().includes(filter));
+
+      listEl.innerHTML = filtered.map((f) => {
+        const i = files.indexOf(f);
+        const j = jobMap && jobMap[f.file];
+        const st = j ? j.status : '';
+        const pct = j ? j.progress : 0;
+        const isSel = selected === f.file;
+        const ext = f.name.split('.').pop().toUpperCase();
+
+        return `
+          <div class="file-item ${isSel ? 'selected' : ''}" data-i="${i}">
+            <input type="checkbox" data-c="${i}" ${f.checked ? 'checked' : ''} onclick="event.stopPropagation()">
+            <span class="file-ext">${ext}</span>
+            <div style="min-width:0">
+              <div class="file-name" title="${f.name}">${f.name}</div>
+              <div class="file-meta">${fmtSize(f.size)}</div>
+            </div>
+            <div class="file-status-badge ${st}">${j ? (st === 'running' ? pct + '%' : st === 'done' ? '✓' : st) : ''}</div>
+          </div>
+        `;
+      }).join('');
+
+      const checkedCount = files.filter(f => f.checked).length;
+      $('count').textContent = `(${checkedCount}/${files.length})`;
+      $('start').disabled = checkedCount === 0;
+      updateSummary();
+    }
+
+    function updateSummary() {
+      const checked = files.filter(f => f.checked);
+      if (checked.length === 0) {
+        $('summaryText').textContent = files.length > 0 ? 'No files selected.' : 'Ready to enhance.';
+      } else {
+        $('summaryText').textContent = `${checked.length} of ${files.length} selected.`;
+      }
+    }
+
+    $('files').addEventListener('click', (e) => {
+      const chk = e.target.closest('[data-c]');
+      if (chk) {
+        files[+chk.dataset.c].checked = chk.checked;
+        renderFiles();
+        return;
+      }
+      const row = e.target.closest('.file-item');
+      if (row) {
+        const idx = +row.dataset.i;
+        selected = files[idx].file;
+        selectedItem = files[idx];
+        currentSeekSeconds = 0;
+        renderFiles();
+        loadPreview();
+      }
+    });
+
+    // Clear buttons logic
+    function setupClearBtn(inputEl, btnEl) {
+      const update = () => { btnEl.style.display = inputEl.value.trim() ? 'block' : 'none'; };
+      inputEl.addEventListener('input', update);
+      btnEl.addEventListener('click', () => {
+        inputEl.value = '';
+        update();
+        inputEl.focus();
+        inputEl.dispatchEvent(new Event('input'));
+      });
+      update();
+    }
+    setupClearBtn($('folder'), $('btnClearFolder'));
+    setupClearBtn($('fileFilter'), $('btnClearFilter'));
+
+    $('fileFilter').addEventListener('input', () => renderFiles());
+    $('btnSelectAll').onclick = () => { files.forEach(f => f.checked = true); renderFiles(); };
+    $('btnDeselectAll').onclick = () => { files.forEach(f => f.checked = false); renderFiles(); };
+
+    function addRecentFolder(folder) {
+      if (!folder) return;
+      let recents = [];
+      try { recents = JSON.parse(localStorage.getItem('ls_recents') || '[]'); } catch {}
+      recents = [folder, ...recents.filter(f => f !== folder)].slice(0, 4);
+      localStorage.setItem('ls_recents', JSON.stringify(recents));
+      renderRecentChips();
+    }
+
+    function renderRecentChips() {
+      let recents = [];
+      try { recents = JSON.parse(localStorage.getItem('ls_recents') || '[]'); } catch {}
+      if (!recents.length) recents = ['outputvideo'];
+      const wrap = $('recentChips');
+      wrap.innerHTML = recents.map(p => `
+        <div class="chip" data-path="${p.replace(/"/g, '&quot;')}" title="${p}">
+          ${p.split(/[\/\\]/).filter(Boolean).pop() || p}
+        </div>
+      `).join('');
+    }
+
+    $('recentChips').addEventListener('click', (e) => {
+      const chip = e.target.closest('.chip');
+      if (chip && chip.dataset.path) {
+        let p = chip.dataset.path;
+        if (p === 'outputvideo') p = 'c:\\Users\\MSI\\Desktop\\project\\LSharper\\outputvideo';
+        $('folder').value = p;
+        $('btnClearFolder').style.display = 'block';
+        $('scan').click();
+      }
+    });
+
+    $('browse').onclick = async () => {
+      const r = await api('browse', { start: $('folder').value.trim() });
+      if (r.folder) {
+        $('folder').value = r.folder;
+        $('btnClearFolder').style.display = 'block';
+        addRecentFolder(r.folder);
+        $('scan').click();
+      }
+    };
+
+    $('browseOut').onclick = async () => {
+      const r = await api('browse', { start: $('outDir').value.trim() || $('folder').value.trim() });
+      if (r.folder) $('outDir').value = r.folder;
+    };
+
+    $('scan').onclick = async () => {
+      const folder = $('folder').value.trim();
+      if (!folder) return;
+      $('scan').disabled = true;
+      $('scan').textContent = 'Loading...';
+      try {
+        const r = await api('scan', { folder });
+        if (r.error) { showToast(r.error); return; }
+        addRecentFolder(folder);
+        files = r.files.map(f => ({ ...f, checked: true }));
+        selected = files[0] ? files[0].file : null;
+        selectedItem = files[0] || null;
+        renderFiles();
+        loadPreview();
+        showToast(`Loaded ${files.length} file${files.length === 1 ? '' : 's'}`);
+      } finally {
+        $('scan').disabled = false;
+        $('scan').textContent = 'Load files';
+      }
+    };
+
+    SLIDERS.forEach(k => {
+      const el = $(k);
+      if (el) {
+        el.addEventListener('input', () => {
+          refreshLabels();
+          schedulePreview();
+        });
+      }
+    });
+    $('upscale').onchange = () => {
+      refreshLabels();
+      schedulePreview();
+    };
+
+    // Presets
+    async function loadPresets(selectName) {
+      const p = await api('presets');
+      window._presets = p;
+      const opts = Object.keys(p);
+      $('presetSel').innerHTML = '<option value="">— Presets —</option>' + opts.map(n => `<option value="${n}">${n}</option>`).join('');
+      if (selectName) $('presetSel').value = selectName;
+    }
+
+    $('presetSel').onchange = () => {
+      const name = $('presetSel').value;
+      const p = window._presets[name];
+      if (p) {
+        applySettings(p);
+        schedulePreview();
+      }
+    };
+
+    $('presetSave').onclick = () => {
+      $('presetNameInput').value = $('presetSel').value || '';
+      $('savePresetModal').classList.add('active');
+      $('presetNameInput').focus();
+    };
+    $('btnCancelPresetModal').onclick = () => $('savePresetModal').classList.remove('active');
+    $('btnConfirmSavePreset').onclick = async () => {
+      const name = $('presetNameInput').value.trim();
+      if (!name) return;
+      await api('presets', { name, settings: getSettings() });
+      await loadPresets(name);
+      $('savePresetModal').classList.remove('active');
+      showToast(`Preset "${name}" saved`);
+    };
+
+    $('presetDel').onclick = async () => {
+      const name = $('presetSel').value;
+      if (!name) return;
+      if (!confirm(`Delete preset "${name}"?`)) return;
+      await api('presets', { name, remove: true });
+      await loadPresets();
+      showToast(`Preset "${name}" deleted`);
+    };
+
+    $('savePresetModal').onclick = (e) => {
+      if (e.target === $('savePresetModal')) $('savePresetModal').classList.remove('active');
+    };
+
+    // Start / Run
+    $('start').onclick = async () => {
+      const sel = files.filter(f => f.checked).map(f => f.file);
+      if (!sel.length) return;
+
+      const r = await api('start', {
+        files: sel,
+        settings: getSettings(),
+        outDir: $('outDir').value.trim() || undefined
+      });
+
+      if (r.error) { showToast(r.error); return; }
+
+      outDirUsed = r.outDir;
+      $('start').disabled = true;
+      $('cancel').disabled = false;
+      $('overallBar').style.display = 'block';
+      $('summaryText').textContent = 'Processing into ' + r.outDir;
+
+      polling = setInterval(poll, 800);
+    };
+
+    $('cancel').onclick = () => api('cancel', {});
+    $('openOut').onclick = () => api('openfolder', { folder: outDirUsed });
+
+    async function poll() {
+      const s = await api('status');
+      const map = {};
+      s.jobs.forEach(j => map[j.file] = j);
+      renderFiles(map);
+
+      const doneCount = s.jobs.filter(j => ['done', 'error', 'cancelled'].includes(j.status)).length;
+      const pctTotal = Math.round((doneCount / s.jobs.length) * 100);
+      $('overallFill').style.width = pctTotal + '%';
+      $('summaryText').textContent = `${doneCount}/${s.jobs.length} completed (${pctTotal}%) · saving to ${outDirUsed}`;
+
+      if (!s.running) {
+        clearInterval(polling);
+        $('cancel').disabled = true;
+        $('start').disabled = false;
+        $('openOut').style.display = 'block';
+        const errs = s.jobs.filter(j => j.status === 'error').length;
+        const success = s.jobs.filter(j => j.status === 'done').length;
+        $('summaryText').textContent = `Finished: ${success} done` + (errs ? `, ${errs} failed` : '') + ` · ${outDirUsed}`;
+      }
+    }
+
+    // Init
+    (async () => {
+      const savedTheme = localStorage.getItem('ls_theme') || 'dark';
+      updateThemeUI(savedTheme);
+
+      const info = await api('info');
+      if (!info.gpu) $('useGpu').checked = false;
+
+      applySettings(DEFAULTS);
+      await loadPresets();
+      renderRecentChips();
+
+      const params = new URLSearchParams(window.location.search);
+      const qFolder = params.get('folder');
+      if (qFolder) {
+        $('folder').value = qFolder;
+        $('btnClearFolder').style.display = 'block';
+        setTimeout(() => $('scan').click(), 100);
+      } else {
+        try {
+          const last = localStorage.getItem('ls_folder') || localStorage.getItem('folder');
+          if (last) {
+            $('folder').value = last;
+            $('btnClearFolder').style.display = 'block';
+          }
+        } catch {}
+      }
+
+      $('folder').addEventListener('change', () => {
+        try { localStorage.setItem('ls_folder', $('folder').value); } catch {}
+      });
+    })();
+  </script>
+</body>
+</html>

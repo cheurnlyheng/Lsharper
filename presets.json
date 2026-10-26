@@ -1,0 +1,67 @@
+{
+  "Cinematic 4K Remaster": {
+    "useGpu": true,
+    "sharpness": 1.2,
+    "saturation": 1.15,
+    "contrast": 1.06,
+    "brightness": -0.01,
+    "denoise": 1,
+    "quality": 18,
+    "upscaleMode": "height",
+    "upscaleFactor": 1,
+    "upscaleHeight": 2160,
+    "upscale": "h2160"
+  },
+  "Anime & High-Clarity (2x)": {
+    "useGpu": true,
+    "sharpness": 1.8,
+    "saturation": 1.2,
+    "contrast": 1.05,
+    "brightness": 0.01,
+    "denoise": 2,
+    "quality": 18,
+    "upscaleMode": "factor",
+    "upscaleFactor": 2,
+    "upscaleHeight": 0,
+    "upscale": "f2"
+  },
+  "Subtle Clarity (1080p)": {
+    "useGpu": true,
+    "sharpness": 0.8,
+    "saturation": 1.1,
+    "contrast": 1.03,
+    "brightness": 0,
+    "denoise": 0.5,
+    "quality": 20,
+    "upscaleMode": "height",
+    "upscaleFactor": 1,
+    "upscaleHeight": 1080,
+    "upscale": "h1080"
+  },
+  "Low-Light Clean & Denoise": {
+    "useGpu": true,
+    "sharpness": 0.6,
+    "saturation": 1.05,
+    "contrast": 1.04,
+    "brightness": 0.04,
+    "denoise": 4,
+    "quality": 20,
+    "upscaleMode": "off",
+    "upscaleFactor": 1,
+    "upscaleHeight": 0,
+    "upscale": "off"
+  },
+  "Social Media Pop": {
+    "useGpu": true,
+    "sharpness": 1.4,
+    "saturation": 1.28,
+    "contrast": 1.08,
+    "brightness": 0.02,
+    "denoise": 0,
+    "quality": 20,
+    "upscaleMode": "off",
+    "upscaleFactor": 1,
+    "upscaleHeight": 0,
+    "upscale": "off"
+  }
+}
